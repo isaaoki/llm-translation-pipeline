@@ -1,0 +1,51 @@
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    ports: 
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment: 
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+    deploy:
+      resources: # Running in CPU, not enough space in GPU
+        limits:
+          memory: 16G
+        reservations:
+          memory: 8G
+        
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+    volumes: 
+      - rabbitmq_data:/var/lib/rabbitmq
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    env_file: rabbitmq/.env
+
+  translation-worker:
+    container_name: translation-worker
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "3"
+    build: .
+    depends_on:
+      - rabbitmq
+      - ollama
+    env_file:
+      - .env
+
+volumes:
+  ollama_data:
+
+  rabbitmq_data:

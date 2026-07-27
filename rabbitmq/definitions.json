@@ -1,0 +1,84 @@
+{
+  "permissions": [
+    {
+      "configure": ".*",
+      "read": ".*",
+      "user": "guest",
+      "vhost": "/dev",
+      "write": ".*"
+    }
+  ],
+  "bindings": [
+    {
+      "arguments": {},
+      "destination": "translation.response.queue",
+      "destination_type": "queue",
+      "routing_key": "translation.response",
+      "source": "translation.exchange",
+      "vhost": "/dev"
+    },
+    {
+      "arguments": {},
+      "destination": "translation.request.queue",
+      "destination_type": "queue",
+      "routing_key": "translation.request",
+      "source": "translation.exchange",
+      "vhost": "/dev"
+    }
+  ],
+  "queues": [
+    {
+      "arguments": {
+        "x-queue-type": "classic"
+      },
+      "auto_delete": false,
+      "durable": true,
+      "name": "translation.response.queue",
+      "type": "classic",
+      "vhost": "/dev"
+    },
+    {
+      "arguments": {
+        "x-queue-type": "classic"
+      },
+      "auto_delete": false,
+      "durable": true,
+      "name": "translation.request.queue",
+      "type": "classic",
+      "vhost": "/dev"
+    }
+  ],
+  "parameters": [],
+  "policies": [],
+  "exchanges": [
+    {
+      "arguments": {},
+      "auto_delete": false,
+      "durable": true,
+      "name": "translation.exchange",
+      "type": "topic",
+      "vhost": "/dev"
+    }
+  ],
+  "vhosts": [
+    {
+      "limits": [],
+      "metadata": {
+        "description": "",
+        "tags": [],
+        "default_queue_type": "classic"
+      },
+      "name": "/dev"
+    }
+  ],
+  "users": [
+    {
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "limits": {},
+      "name": "guest",
+      "password_hash": "Qs28fjYCaK3hHJHHa+wTyX13IfTxxg0uslFqgrCAZ8fudtwL",
+      "tags": ["administrator"]
+    }
+  ],
+  "topic_permissions": []
+}
